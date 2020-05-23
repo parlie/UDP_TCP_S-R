@@ -1,0 +1,25 @@
+﻿<Controls:MetroWindow x:Class="UDP_TCP_S_R.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:UDP_TCP_S_R"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        ResizeMode="NoResize"
+        Title="Settings" Height="250" Width="365.333">
+    <Grid>
+        <TabControl HorizontalAlignment="Left" Height="212" Margin="10,0,0,0" VerticalAlignment="Top" Width="340">
+            <TabItem Header="UDP">
+                <Grid>
+                    <CheckBox Name="DefaultCheckboxUDP" Content="Use dafault port" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Checked="DefaultCheckboxUDP_Checked" Unchecked="DefaultCheckboxUDP_Unchecked"/>
+                    <TextBox Name="DefaultLocalUDP" HorizontalAlignment="Left" Height="23" Margin="146,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Background="{x:Null}" LostFocus="DefaultLocalUDP_LostFocus"/>
+                    <TextBox Name="DefaultRemoteUDP" HorizontalAlignment="Left" Height="23" Margin="231,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Background="{x:Null}" LostFocus="DefaultRemoteUDP_LostFocus"/>
+                    <Label Name="DefaultLocalLabelUDP" Panel.ZIndex="-1" IsEnabled="False" Content="Local port" HorizontalAlignment="Left" Margin="146,7,0,0" VerticalAlignment="Top"/>
+                    <Label Name="DefaultRemoteLabelUDP" Panel.ZIndex="-1" IsEnabled="False" Content="Remote port" HorizontalAlignment="Left" Margin="231,7,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="TCP" Background="{x:Null}">
+                <Grid/>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Controls:MetroWindow>

@@ -1,0 +1,77 @@
+﻿<Controls:MetroWindow
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:UDP_TCP_S_R"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:controlzex="urn:controlzex" x:Class="UDP_TCP_S_R.MainWindow"
+        ResizeMode="CanMinimize"
+        ShowMinButton="True"
+        Title="UDP/TCP Sender/Receiver" Height="550" Width="815" WindowStartupLocation="CenterScreen" AllowsTransparency="True" GlowBrush="{Binding WindowTitleBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Controls:MetroWindow}}}">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Controls:SplitButton Height="22" MinHeight="22" FontSize="9" x:Name="sbuton" Width="66" SelectionChanged="sbuton_SelectionChanged"/>
+            <ToggleButton Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked">
+                <StackPanel>
+                    <iconPacks:PackIconFontAwesome Width="12" Height="12" x:Name="moon" Kind="MoonSolid" VerticalAlignment="Center"/>
+                </StackPanel>
+            </ToggleButton>
+            <Button Click="Button_Click_16">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconFontAwesome Width="12" Height="12" x:Name="sett" Kind="WrenchSolid" VerticalAlignment="Center"/>
+                    <TextBlock Margin="2 0 0 0" VerticalAlignment="Center" Text="Settings"/>
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Grid>
+        <Button Content="Save terminal" HorizontalAlignment="Left" Margin="416,479,0,0" VerticalAlignment="Top" Click="Button_Click_6"/>
+        <Button Content="Clear" HorizontalAlignment="Left" Margin="510,479,0,0" VerticalAlignment="Top" Width="89" Click="Button_Click_8"/>
+        <Label VerticalContentAlignment="Top" HorizontalContentAlignment="Right" x:Name="MyIpAddress" HorizontalAlignment="Right" Margin="0,26,19.333,0" VerticalAlignment="Top" Height="26" Content="Local IP:" FontWeight="Bold"/>
+        <RichTextBox Opacity="100" x:Name="LogRichBox" HorizontalAlignment="Left" Height="422" Margin="416,52,0,0" VerticalAlignment="Top" Width="374" IsReadOnly="True" BorderThickness="1" Cursor="Arrow" IsManipulationEnabled="True" IsInactiveSelectionHighlightEnabled="True" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" controlzex:KeyboardNavigationEx.AlwaysShowFocusVisual="True"/>
+        <Controls:MetroAnimatedSingleRowTabControl HorizontalAlignment="Left" Height="496" Margin="10,10,0,0" VerticalAlignment="Top" Width="401" BorderThickness="0,0,1,0" Controls:TabControlHelper.IsUnderlined="True" Controls:TabControlHelper.Underlined="SelectedTabItem">
+            <TabItem Header="UDP" BorderThickness="0" >
+                <Grid Margin="0,0,0,0">
+                    <TextBox LostFocus="IPInput_LostFocus" x:Name="IPInput" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" ToolTip="IP adresa" Background="{x:Null}" Panel.ZIndex="1" Grid.ColumnSpan="2"/>
+                    <TextBox ToolTip="Remote port" LostFocus="RemotePortInput_LostFocus" x:Name="RemotePortInput" HorizontalAlignment="Left" Height="23" Margin="10,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="{x:Null}" Panel.ZIndex="1" Grid.ColumnSpan="2"/>
+                    <TextBox ToolTip="Local port" x:Name="LocalPortInput" HorizontalAlignment="Left" Height="23" Margin="10,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" LostFocus="LocalPortInput_LostFocus" Background="{x:Null}" Panel.ZIndex="1" Grid.ColumnSpan="2" TextChanged="LocalPortInput_TextChanged"/>
+                    <TextBox ToolTip="Data" x:Name="DataInput" HorizontalAlignment="Left" Height="74" Margin="10,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="380" LostFocus="DataInput_LostFocus" Background="{x:Null}" Panel.ZIndex="1" Grid.ColumnSpan="2"/>
+                    <Button x:Name="ButtonListen" Content="Listen" HorizontalAlignment="Left" Margin="10,173,0,0" VerticalAlignment="Top" Click="Button_Click_1" Width="75" Grid.ColumnSpan="2"/>
+                    <Button Content="Send" HorizontalAlignment="Left" Margin="90,173,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+                    <Label x:Name="IPAddressLabel" IsEnabled="False" Content="IP Address" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="84" VerticalContentAlignment="Center" Grid.ColumnSpan="2"/>
+                    <Label x:Name="RemotePortLabel" IsEnabled="False" Content="Remote port" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Height="26" Width="84" Cursor="None" VerticalContentAlignment="Center" Grid.ColumnSpan="2"/>
+                    <Label x:Name="LocalPortLabel" IsEnabled="False" Content="Local port" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Height="26" Width="84" VerticalContentAlignment="Center" Grid.ColumnSpan="2"/>
+                    <Label x:Name="DataLabel" IsEnabled="False" Content="Data" HorizontalAlignment="Left" Margin="10,97,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <Button Content="Save" HorizontalAlignment="Left" Margin="10,427,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+                    <Button Content="Load" HorizontalAlignment="Left" Margin="90,427,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
+                    <ListBox x:Name="saveListBox" BorderBrush="Gray" HorizontalAlignment="Left" Height="217" Margin="10,205,0,0" VerticalAlignment="Top" Width="235" BorderThickness="1"/>
+                    <Button Content="Stop" HorizontalAlignment="Left" Margin="170,173,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+                    <Button Content="Delete" HorizontalAlignment="Left" Margin="170,427,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5"/>
+                    <Button Content="Send ASCII image" HorizontalAlignment="Left" Margin="250,173,0,0" VerticalAlignment="Top" Click="Button_Click_7"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="TCP">
+                <Grid Margin="0,0,1,0">
+                    <TextBox LostFocus="tcpIpAdress_LostFocus" x:Name="tcpIpAdress"  HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="{x:Null}"/>
+                    <TextBox LostFocus="tcpRemotePort_LostFocus" x:Name="tcpRemotePort" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="{x:Null}"/>
+                    <TextBox LostFocus="tcpLocalPort_LostFocus" x:Name="tcpLocalPort" HorizontalAlignment="Left" Height="23" Margin="10,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="{x:Null}"/>
+                    <TextBox LostFocus="tcpData_LostFocus" x:Name="tcpData" HorizontalAlignment="Left" Height="74" Margin="10,103,0,0" VerticalAlignment="Top" Width="341" Background="{x:Null}"/>
+                    <Button Content="Listen" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_9"/>
+                    <Button Content="Send" HorizontalAlignment="Left" Margin="90,182,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_10"/>
+                    <Button Content="Stop" HorizontalAlignment="Left" Margin="170,182,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_11"/>
+                    <Button Content="Send image" HorizontalAlignment="Left" Margin="250,182,0,0" VerticalAlignment="Top" Click="Button_Click_12"/>
+                    <ListBox x:Name="saveListBoxTCP" HorizontalAlignment="Left" Height="200" Margin="10,214,0,0" VerticalAlignment="Top" Width="235" BorderThickness="1" BorderBrush="Gray"/>
+                    <Button Content="Save" HorizontalAlignment="Left" Margin="10,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_14"/>
+                    <Button Content="Load" HorizontalAlignment="Left" Margin="90,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_13"/>
+                    <Button Content="Delete" HorizontalAlignment="Left" Margin="170,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_15"/>
+                    <Label x:Name="IPAdressLabelTcp" Content="IP Adress" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsEnabled="False" Panel.ZIndex="-1"/>
+                    <Label x:Name="RemotePortLabelTcp" Content="Remote port" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" IsEnabled="False" Panel.ZIndex="-1"/>
+                    <Label x:Name="LocalPortLabelTcp" Content="Local port" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" IsEnabled="False" Panel.ZIndex="-1"/>
+                    <Label x:Name="DataLabelTcp" Content="Data" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" IsEnabled="False" Panel.ZIndex="-1"/>
+                </Grid>
+            </TabItem>
+        </Controls:MetroAnimatedSingleRowTabControl>
+        <Button Content="Open log file" HorizontalAlignment="Left" Margin="604,479,0,0" VerticalAlignment="Top" Click="Button_Click_17"/>
+    </Grid>
+
+</Controls:MetroWindow>
