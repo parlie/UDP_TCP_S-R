@@ -27,6 +27,7 @@ namespace UDP_TCP_S_R
         {
             listener.Bind(new IPEndPoint(IPAddress.Any, localPort));
             listener.Listen(1);
+            listener.ReceiveTimeout = 10000;
             MainWindow.mw.Dispatcher.Invoke(() =>
             {
                 Log.WriteInfo("Awaiting client connection.");
@@ -47,7 +48,6 @@ namespace UDP_TCP_S_R
                 {
                     Log.WriteInfo("Client succesfully connected.");
                 });
-                // endPoint.Create(socket.RemoteEndPoint.Serialize());
                 if (IsTCPServerRunning)
                 {
                     socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
@@ -55,16 +55,17 @@ namespace UDP_TCP_S_R
             }
             else
             {
+                listener.Disconnect(true);
                 listener.Close();
+                listener.Dispose();
             }
         }
 
         void ReceiveCallback(IAsyncResult result)
         {
-            Console.WriteLine(result.IsCompleted);
             Socket socket = (Socket)result.AsyncState;
             int size = socket.EndReceive(result);
-            if (size == 0)
+            if (size == 0 || IsTCPServerRunning == false)
             {
                 StopServer(result);
             }
@@ -74,12 +75,19 @@ namespace UDP_TCP_S_R
                 MainWindow.mw.Dispatcher.Invoke(() =>
                 {
                     Log.WriteResponse(data);
-                    Log.WriteInfo($"Recieved {size} bytes.");
+                  //  Log.WriteInfo($"Recieved {size} bytes.");
                 });
                 buffer = new byte[256];
                 if (socket.Connected)
                 {
-                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
+                    if (IsTCPServerRunning == true)
+                    {
+                        socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
+                    }
+                    else
+                    {
+                        socket.Disconnect(true);
+                    }
                 }
             }
         }
@@ -103,33 +111,38 @@ namespace UDP_TCP_S_R
         public void StopServer(IAsyncResult result)
         {
             Socket socket = (Socket)result.AsyncState;
+            socket.Disconnect(true);
             socket.Close();
             if (portValues.Contains(localPort))
             {
-                try
-                {
-                    int read = 0;
-                    while ((read = listener.Receive(buffer)) > 0)
-                    { }
-                }
-                catch
-                {
-                    //ignore
-                }
+                //listener.Disconnect(true);
                 listener.Close();
             }
             MainWindow.mw.Dispatcher.Invoke(() =>
             {
                 Log.WriteError("Remote client has disconnected.");
             });
-            IsTCPServerRunning = false;
             portValues.Remove(localPort);
+            IsTCPServerRunning = false;
         } 
 
         public void StopServer()
         {
-            listener.Close();
-            IsTCPServerRunning = false;
+            //listener.Disconnect(true);
+            if(listener.Connected == true)
+            {
+                listener.Disconnect(true);
+                listener.Close();
+                listener.Dispose();
+            }
+            else
+            {
+                listener.Close();
+                listener.Dispose();
+                portValues.Remove(localPort);
+                IsTCPServerRunning = false;
+                Log.WriteSucces("TCP server has been succesfuly closed.");
+            }
         }
     }
     
