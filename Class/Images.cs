@@ -27,15 +27,5 @@ namespace UDP_TCP_S_R
             ImageConverter imageConverter = new ImageConverter();
             return (Image)imageConverter.ConvertFrom(byt);
         }
-
-        public static void ImageSend(byte[] image)
-        {
-           // TCPClient.Connect(server,image);
-        }
-
-        public static void ImageReceive()
-        {
-
-        }
     }
 }
