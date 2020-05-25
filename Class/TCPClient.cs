@@ -4,42 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
+using System.Net;
 
 namespace UDP_TCP_S_R
 {
     public class TCPClient
     {
-        public static void Connect(string server, string message)
+        static Random random = new Random();
+        Socket sender;
+        int remotePort;
+        IPAddress iPAddress;
+
+        public TCPClient(int _RemotePort, IPAddress _iPAddress)
         {
-            int port = 13000;
-            //create client
-            TcpClient client = new TcpClient(server,port);
-
-            //translate message
-            Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-
-            //client stream for reading and writing
-            NetworkStream stream = client.GetStream();
-
-            //send message to connected server
-            stream.Write(data, 0, data.Length);
-            Log.WriteInfo("Sent: " + message);
-
-            data = new byte[256];
-            string responseData = String.Empty;
-            int bytes = stream.Read(data, 0, data.Length);
-            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-            Log.WriteResponse("Received: " + responseData);
-
-            stream.Close();
-            client.Close();
-
+            remotePort = _RemotePort;
+            iPAddress = _iPAddress;
         }
 
-        public static void Connect(string server, byte[] data)
+        public void SendData(string data)
         {
 
         }
 
+        public void SendImage()
+        {
+
+        }
     }
 }
