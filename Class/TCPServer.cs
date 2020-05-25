@@ -6,108 +6,122 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
-
 namespace UDP_TCP_S_R
 {
     class TCPServer
     {
+        //Variables
+        Socket listener;
+        List<Socket> clients = new List<Socket>();
+        byte[] buffer;
         int localPort;
         static List<int> portValues = new List<int>();
-
         public bool IsTCPServerRunning = false;
-        Socket listener = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
-        byte[] buffer;
 
         public TCPServer(int _localPort)
         {
             localPort = _localPort;
         }
 
-        void Begin()
+        public void StartServer()
         {
-            listener.Bind(new IPEndPoint(IPAddress.Any, localPort));
-            listener.Listen(1);
-            listener.ReceiveTimeout = 10000;
-            MainWindow.mw.Dispatcher.Invoke(() =>
+            if (!portValues.Contains(localPort))
             {
-                Log.WriteInfo("Awaiting client connection.");
-            });
-            if (IsTCPServerRunning)
-            {
-                listener.BeginAccept(AcceptCallback, null);
-            }
-        }
-
-        void AcceptCallback(IAsyncResult result)
-        {
-            if (IsTCPServerRunning)
-            {
-                Socket socket = listener.EndAccept(result);
-                buffer = new byte[256];
-                MainWindow.mw.Dispatcher.Invoke(() =>
-                {
-                    Log.WriteInfo("Client succesfully connected.");
-                });
+                IsTCPServerRunning = true;
+                portValues.Add(localPort);
+                Log.WriteSucces($"TCP server is now listenig on port {localPort}");
+                listener = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
+                listener.Bind(new IPEndPoint(IPAddress.Any, localPort));
+                listener.Listen(5);
+                Log.WriteInfo("Awaiting clients...");
                 if (IsTCPServerRunning)
                 {
-                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
+                    listener.BeginAccept(AcceptCallback, null);
+                }
+                else
+                {
+                    StopServer();
                 }
             }
             else
             {
-                listener.Disconnect(true);
-                listener.Close();
-                listener.Dispose();
+                Log.WriteError($"TCP server is already running on port {localPort}, please use diferent port.");
+            }
+        }
+
+        public void StopServer()
+        {
+            listener.Dispose();
+            for (int i = 0; i < clients.Count; i++)
+            {
+                clients[0].Disconnect(true);
+            }
+            portValues.Remove(localPort);
+            IsTCPServerRunning = false;
+            Log.WriteSucces("Server has been succesfuly closed and all clients disconnected.");
+        }
+
+        void AcceptCallback(IAsyncResult result)
+        {
+            try
+            {
+                Socket connected = listener.EndAccept(result);
+                clients.Add(connected);
+                MainWindow.mw.Dispatcher.Invoke(() =>
+                {
+                    Log.WriteInfo($"Client connected from {connected.RemoteEndPoint}");
+                });
+                buffer = new byte[connected.ReceiveBufferSize];
+                if (IsTCPServerRunning)
+                {
+                    connected.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, connected);
+                    listener.BeginAccept(AcceptCallback, null);
+                }
+                else
+                {
+                    StopServer();
+                }
+            }
+            catch (ObjectDisposedException e)
+            {
+                MainWindow.mw.Dispatcher.Invoke(() =>
+                {
+                    Log.WriteError("Current socket was disposed, voiding accept callback.");
+                });
             }
         }
 
         void ReceiveCallback(IAsyncResult result)
         {
             Socket socket = (Socket)result.AsyncState;
-            int size = socket.EndReceive(result);
-            if (size == 0 || IsTCPServerRunning == false)
+            int bytes = socket.EndReceive(result);
+            if (bytes != 0)
             {
-                StopServer(result);
-            }
-            else
-            {
-                string data = (string)Encoding.ASCII.GetString(buffer);
                 MainWindow.mw.Dispatcher.Invoke(() =>
                 {
-                    Log.WriteResponse(data);
-                  //  Log.WriteInfo($"Recieved {size} bytes.");
+                    Log.WriteInfo($"Received {bytes} bytes from {socket.RemoteEndPoint}");
+                    Log.WriteResponse(Encoding.UTF8.GetString(buffer, 0, bytes));
                 });
-                buffer = new byte[256];
-                if (socket.Connected)
+                if (IsTCPServerRunning)
                 {
-                    if (IsTCPServerRunning == true)
-                    {
-                        socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
-                    }
-                    else
-                    {
-                        socket.Disconnect(true);
-                    }
+                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
                 }
-            }
-        }
-
-        public void StartServer()
-        {
-            if (!portValues.Contains(localPort))
-            {
-                // listener.ReceiveTimeout = 10000;
-                IsTCPServerRunning = true;
-                Log.WriteSucces("TCP server is now running on port: " + localPort);
-                portValues.Add(localPort);
-                Begin();
+                else
+                {
+                    StopServer();
+                }
             }
             else
             {
-                Log.WriteError("TCP server is already running on this port!");
+                clients.Remove(socket);
+                MainWindow.mw.Dispatcher.Invoke(() =>
+                {
+                    Log.WriteInfo($"Client {socket.RemoteEndPoint} disconnected.");
+                });
             }
         }
 
+        /*
         public void StopServer(IAsyncResult result)
         {
             Socket socket = (Socket)result.AsyncState;
@@ -143,7 +157,7 @@ namespace UDP_TCP_S_R
                 IsTCPServerRunning = false;
                 Log.WriteSucces("TCP server has been succesfuly closed.");
             }
-        }
+        }*/
     }
     
 }
