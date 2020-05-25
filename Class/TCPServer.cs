@@ -121,43 +121,6 @@ namespace UDP_TCP_S_R
             }
         }
 
-        /*
-        public void StopServer(IAsyncResult result)
-        {
-            Socket socket = (Socket)result.AsyncState;
-            socket.Disconnect(true);
-            socket.Close();
-            if (portValues.Contains(localPort))
-            {
-                //listener.Disconnect(true);
-                listener.Close();
-            }
-            MainWindow.mw.Dispatcher.Invoke(() =>
-            {
-                Log.WriteError("Remote client has disconnected.");
-            });
-            portValues.Remove(localPort);
-            IsTCPServerRunning = false;
-        } 
-
-        public void StopServer()
-        {
-            //listener.Disconnect(true);
-            if(listener.Connected == true)
-            {
-                listener.Disconnect(true);
-                listener.Close();
-                listener.Dispose();
-            }
-            else
-            {
-                listener.Close();
-                listener.Dispose();
-                portValues.Remove(localPort);
-                IsTCPServerRunning = false;
-                Log.WriteSucces("TCP server has been succesfuly closed.");
-            }
-        }*/
     }
     
 }
