@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
+using System.IO;
 using System.Threading;
+using System.Drawing;
+
 namespace UDP_TCP_S_R
 {
     class TCPServer
@@ -97,18 +100,89 @@ namespace UDP_TCP_S_R
             int bytes = socket.EndReceive(result);
             if (bytes != 0)
             {
-                MainWindow.mw.Dispatcher.Invoke(() =>
+                if(buffer.First() != 2)
                 {
-                    Log.WriteInfo($"Received {bytes} bytes from {socket.RemoteEndPoint}");
-                    Log.WriteResponse(Encoding.UTF8.GetString(buffer, 0, bytes));
-                });
-                if (IsTCPServerRunning)
-                {
-                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
+                    MainWindow.mw.Dispatcher.Invoke(() =>
+                    {
+                      //  Log.WriteInfo($"Received {bytes} bytes from {socket.RemoteEndPoint}");
+                        Log.WriteResponse(Encoding.UTF8.GetString(buffer, 0, bytes));
+                    });
+                    if (IsTCPServerRunning)
+                    {
+                        socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, socket);
+                    }
+                    else
+                    {
+                        StopServer();
+                    }
                 }
                 else
                 {
-                    StopServer();
+                    MainWindow.mw.Dispatcher.Invoke(() =>
+                    {
+                        Log.WriteInfo("Receiving image...");
+                    });
+                    byte[] temp;
+                    string ext = null;
+                    temp = new byte[buffer.Length - 1];
+                    Array.Copy(buffer, 1,temp, 0, buffer.Length - 1);
+                    if(temp.First() == 0)
+                    {
+                        ext = "jpg";
+                    }
+                    else if(temp.First() == 1)
+                    {
+                        ext = "png";
+                    }
+                    else if(temp.First() == 2)
+                    {
+                        ext = "bmp";
+                    }
+                    buffer = new byte[temp.Length - 1];
+                    Array.Copy(temp, 1, buffer, 0, temp.Length - 1);
+                    Image image = Images.BytesToImage(buffer);
+                    while (true)
+                    {
+                        if (Directory.Exists(@"C:\Users\Public\Pictures\Received Images\"))
+                        {
+                            if (ext == "jpg")
+                            {
+                                image.Save(@"C:\Users\Public\Pictures\Received Images\" + DateTime.Now.ToString("MM-dd-yyyy hh-mm") + "." + ext, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                MainWindow.mw.Dispatcher.Invoke(() =>
+                                {
+                                    Log.WriteSucces("Image succesfully received!");
+                                });
+                            }
+                            else if (ext == "png")
+                            {
+                                image.Save(@"C:\Users\Public\Pictures\Received Images\" + DateTime.Now.ToString("MM-dd-yyyy hh-mm") + "." + ext, System.Drawing.Imaging.ImageFormat.Png);
+                                MainWindow.mw.Dispatcher.Invoke(() =>
+                                {
+                                    Log.WriteSucces("Image succesfully received!");
+                                });
+                            }
+                            else if (ext == "bmp")
+                            {
+                                image.Save(@"C:\Users\Public\Pictures\Received Images\" + DateTime.Now.ToString("MM-dd-yyyy hh-mm") + "." + ext, System.Drawing.Imaging.ImageFormat.Bmp);
+                                MainWindow.mw.Dispatcher.Invoke(() =>
+                                {
+                                    Log.WriteSucces("Image succesfully received!");
+                                });
+                            }
+                            else
+                            {
+                                MainWindow.mw.Dispatcher.Invoke(() =>
+                                {
+                                    Log.WriteError("There was an error while saving data.");
+                                });
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            Directory.CreateDirectory(@"C:\Users\Public\Pictures\Received Images\");
+                        }
+                    }
                 }
             }
             else
