@@ -83,6 +83,8 @@ namespace UDP_TCP_S_R
 
         //TCP
         TCPServer tcpServer;
+        TCPClient tCPClient;
+        bool istCPClientRunningLocal = false;
 
         //Other data
         public static Tuple<AppTheme, Accent> appStyle;
@@ -428,7 +430,10 @@ namespace UDP_TCP_S_R
 
         private void Button_Click_10(object sender, RoutedEventArgs e) //Send
         {
-
+            if (istCPClientRunningLocal)
+            {
+                tCPClient.SendData(dataVarTcp);
+            }
         }
 
         private void Button_Click_11(object sender, RoutedEventArgs e) //Stop
@@ -443,28 +448,68 @@ namespace UDP_TCP_S_R
         }
 
         private void Button_Click_12(object sender, RoutedEventArgs e) //SendASCIIImage
-        { 
-            OpenFileDialog ofd = new OpenFileDialog();
-
-            ofd.Filter = "Image files|*.jpg;*.png;*.bmp";
-            ofd.InitialDirectory = "c:\\";
-            ofd.FilterIndex = 1;
-            ofd.RestoreDirectory = true;
-            ofd.Title = "Select image to send";
-            ofd.Multiselect = false;
-
-            Nullable<bool> ofdResult = ofd.ShowDialog();
-
-            if(ofdResult == true)
+        {
+            if (istCPClientRunningLocal)
             {
-                byte[] image = Images.ImageToByte(Image.FromFile(ofd.FileName));
-                Images.ImageSend(image);
+                OpenFileDialog ofd = new OpenFileDialog();
+
+                ofd.Filter = "Image files|*.jpg;*.png;*.bmp";
+                ofd.InitialDirectory = "c:\\";
+                ofd.FilterIndex = 1;
+                ofd.RestoreDirectory = true;
+                ofd.Title = "Select image to send";
+                ofd.Multiselect = false;
+
+                Nullable<bool> ofdResult = ofd.ShowDialog();
+
+                if (ofdResult == true)
+                {
+                    byte[] image = Images.ImageToByte(Image.FromFile(ofd.FileName));
+                    byte[] temp = new byte[image.Length + 1];
+                    if (ofd.FileName.Contains("jpg"))
+                    {
+                        temp[0] = 0;
+                    }
+                    else if (ofd.FileName.Contains("png"))
+                    {
+                        temp[0] = 1;
+                    }
+                    else if (ofd.FileName.Contains("bmp"))
+                    {
+                        temp[0] = 2;
+                    }
+
+                    if (istCPClientRunningLocal)
+                    {
+                        image.CopyTo(temp, 1);
+                        tCPClient.SendImage(temp);
+                    }
+                }
+            }
+            else
+            {
+                Log.WriteError("You have to be connected to server first.");
             }
         }
 
         private void Button_Click_13(object sender, RoutedEventArgs e) //Load
         {
 
+        }
+
+        private void Button_Click_18(object sender, RoutedEventArgs e) //Connect
+        {
+            istCPClientRunningLocal = true;
+            tCPClient = new TCPClient(remotePortVarTcp, ipAdressVarTcp);
+            tCPClient.ConnectToServer();
+        }
+
+        private void Button_Click_19(object sender, RoutedEventArgs e) //Disconect
+        {
+            if(istCPClientRunningLocal)
+            {
+                tCPClient.CloseConnection();
+            }
         }
 
         private void Button_Click_14(object sender, RoutedEventArgs e) //Save

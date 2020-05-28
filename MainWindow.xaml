@@ -57,10 +57,10 @@
                     <TextBox LostFocus="tcpLocalPort_LostFocus" x:Name="tcpLocalPort" HorizontalAlignment="Left" Height="23" Margin="10,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="{x:Null}"/>
                     <TextBox LostFocus="tcpData_LostFocus" x:Name="tcpData" HorizontalAlignment="Left" Height="74" Margin="10,103,0,0" VerticalAlignment="Top" Width="341" Background="{x:Null}"/>
                     <Button Content="Listen" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_9"/>
-                    <Button Content="Send" HorizontalAlignment="Left" Margin="90,182,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_10"/>
-                    <Button Content="Stop" HorizontalAlignment="Left" Margin="170,182,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_11"/>
-                    <Button Content="Send image" HorizontalAlignment="Left" Margin="250,182,0,0" VerticalAlignment="Top" Click="Button_Click_12"/>
-                    <ListBox x:Name="saveListBoxTCP" HorizontalAlignment="Left" Height="200" Margin="10,214,0,0" VerticalAlignment="Top" Width="235" BorderThickness="1" BorderBrush="Gray"/>
+                    <Button Content="Send" HorizontalAlignment="Left" Margin="90,214,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_10"/>
+                    <Button Content="Stop" HorizontalAlignment="Left" Margin="90,182,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_11"/>
+                    <Button Content="Send image" HorizontalAlignment="Left" Margin="250,214,0,0" VerticalAlignment="Top" Click="Button_Click_12"/>
+                    <ListBox x:Name="saveListBoxTCP" HorizontalAlignment="Left" Height="168" Margin="10,246,0,0" VerticalAlignment="Top" Width="235" BorderThickness="1" BorderBrush="Gray"/>
                     <Button Content="Save" HorizontalAlignment="Left" Margin="10,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_14"/>
                     <Button Content="Load" HorizontalAlignment="Left" Margin="90,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_13"/>
                     <Button Content="Delete" HorizontalAlignment="Left" Margin="170,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_15"/>
@@ -68,6 +68,8 @@
                     <Label x:Name="RemotePortLabelTcp" Content="Remote port" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" IsEnabled="False" Panel.ZIndex="-1"/>
                     <Label x:Name="LocalPortLabelTcp" Content="Local port" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" IsEnabled="False" Panel.ZIndex="-1"/>
                     <Label x:Name="DataLabelTcp" Content="Data" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" IsEnabled="False" Panel.ZIndex="-1"/>
+                    <Button Content="Connect" HorizontalAlignment="Left" Margin="12,214,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_18"/>
+                    <Button Content="Disconnect" HorizontalAlignment="Left" Margin="170,214,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_19"/>
                 </Grid>
             </TabItem>
         </Controls:MetroAnimatedSingleRowTabControl>
